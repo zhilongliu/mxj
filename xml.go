@@ -343,7 +343,8 @@ func xmlToMapParser(skey string, a []xml.Attr, p *xml.Decoder, r bool) (map[stri
 					v.Name.Local = strings.Replace(v.Name.Local, "-", "_", -1)
 				}
 				var key string
-				key = attrPrefix + v.Name.Local
+				fmt.Println("zlliu346: ", v.Name.Space, v.Name.Local)
+				key = attrPrefix + v.Name.Space + v.Name.Local
 				if lowerCase {
 					key = strings.ToLower(key)
 				}
@@ -377,12 +378,14 @@ func xmlToMapParser(skey string, a []xml.Attr, p *xml.Decoder, r bool) (map[stri
 			// processing before getting the next token which is the element value,
 			// which is done above.
 			if skey == "" {
+				fmt.Println("zlliu381: ", tt.Name.Space, tt.Name.Local)
 				return xmlToMapParser(tt.Name.Local, tt.Attr, p, r)
 			}
 
 			// If not initializing the map, parse the element.
 			// len(nn) == 1, necessarily - it is just an 'n'.
-			nn, err := xmlToMapParser(tt.Name.Local, tt.Attr, p, r)
+			fmt.Println("zlliu387: ", tt.Name.Space, tt.Name.Local)
+			nn, err := xmlToMapParser(tt.Name.Space + tt.Name.Local, tt.Attr, p, r)
 			if err != nil {
 				return nil, err
 			}

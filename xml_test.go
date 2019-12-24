@@ -6,6 +6,8 @@ import (
 	"io"
 	"reflect"
 	"testing"
+	"encoding/xml"
+	"github.com/zhilongliu/mxj/x2j"
 )
 
 func TestXmlHeader(t *testing.T) {
@@ -163,15 +165,24 @@ func TestXml_5(t *testing.T) {
 
 
 func TestXml_Strings(t *testing.T) {
-	mv := Map{"sometag": "some data", "strings": []string{"string1", "string2"}}
+	var xmlStr = `<?xml version="1.0" encoding="utf-8"?>
+<soap12:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+xmlns:soap12="http://www.w3.org/2003/05/soap-envelope">
+  <soap12:Body>
+    <getSupportCity xmlns="http://WebXml.com.cn/">
+      <f:byProvinceName>string</f:byProvinceName>
+    </getSupportCity>
+  </soap12:Body>
+</soap12:Envelope>`
 
-	x, err := mv.Xml()
+	CustomDecoder = &xml.Decoder{Strict: false}
+
+	jsonStr, err := x2j.XmlToJson([]byte(xmlStr))
 	if err != nil {
-		t.Fatal("err:", err.Error())
+		fmt.Println("err: ", err)
 	}
 
-	fmt.Println("Xml_strings, mv:", mv)
-	fmt.Println("Xml_strings, x :", string(x))
+	fmt.Println("result: ", string(jsonStr))
 }
 
 
